@@ -10,6 +10,8 @@ window.title('Bubble Blaster')
 c = Canvas(window, width = WIDTH, height = HEIGHT, bg = 'darkblue')
 c.pack()
 
+
+#SHIP
 ship_id = c.create_polygon(5, 5, 5, 25, 30, 15, fill = 'red')
 ship_id2 = c.create_oval(0, 0, 30, 30, outline = 'red') 
 SHIP_R = 15
@@ -17,8 +19,6 @@ MID_X = WIDTH / 2
 MID_Y = HEIGHT / 2
 c.move(ship_id, MID_X, MID_Y)
 c.move(ship_id2, MID_X, MID_Y)
-
-
 
 SHIP_SPD = 10
 def move_ship(event):
@@ -143,41 +143,60 @@ def show_score(score):
 def show_time(time_left):
     c.itemconfig(time_text, text = str(time_left))
     
-
-
 BUB_CHANCE = 10
 BOMB_CHANCE = 500
 TIME_LIMIT = 30
 BONUS_SCORE = 350
 score = 0
 bonus = 0
-end = time() + TIME_LIMIT
-#MAIN GAME LOOP
-while time() < end:
-    if randint(1, BUB_CHANCE) == 1:
-        create_bubble()
-    if randint(1, BOMB_CHANCE) == 1:
-        create_bomb()
-    move_bubbles()
-    move_bombs()
-    clean_up_bombs()
-    clean_up_bubs()
-    GAME_OVER = collision_bombs()
-    if GAME_OVER == "GAME OVER":
-        break
-    score += collision_bubs()
-    if (int(score / BONUS_SCORE)) > bonus:
-        bonus += 1
-        end += TIME_LIMIT
-    show_score(score)
-    show_time(int(end - time()))
-    window.update()
-    sleep(0.01)
+end = time() + TIME_LIMIT    
+def main(event):
+    global BUB_CHANCE
+    global BOMB_CHANCE
+    global TIME_LIMIT
+    global BONUS_SCORE
+    global score
+    global bonus
+    global end    
+    #MAIN GAME LOOP
     
-    
+    while time() < end:
+        if randint(1, BUB_CHANCE) == 1:
+            create_bubble()
+        if randint(1, BOMB_CHANCE) == 1:
+            create_bomb()
+        move_bubbles()
+        move_bombs()
+        clean_up_bombs()
+        clean_up_bubs()
+        GAME_OVER = collision_bombs()
+        if GAME_OVER == "GAME OVER":
+            break
+        score += collision_bubs()
+        if (int(score / BONUS_SCORE)) > bonus:
+            bonus += 1
+            end += TIME_LIMIT
+        show_score(score)
+        show_time(int(end - time()))
+        window.update()
+        sleep(0.01)
+        
+main(1)
+BUB_CHANCE = 10
+BOMB_CHANCE = 500
+TIME_LIMIT = 30
+BONUS_SCORE = 350
+score = 0
+bonus = 0
+end = time() + TIME_LIMIT 
+
 #GAME OVER
 c.create_text(int(MID_X), int(MID_Y), text = 'GAME OVER', fill = 'white', font = ('Arial', 30))
 c.create_text(int(MID_X), int(MID_Y + 30), text = 'Score: ' +  str(score), fill = 'white')
 c.create_text(int(MID_X), int(MID_Y + 45), text = 'Bonus time: ' + str(bonus * TIME_LIMIT), fill = 'white')
 
+
+btn_again = Button(text = 'Again')
+btn_again.place(x = MID_X - 20, y = MID_Y + 60)
+btn_again.bind('<Button-1>', main)
 window.mainloop()
